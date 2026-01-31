@@ -18,13 +18,14 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.*;
 
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String SERVER_URL = "http://192.168.188.18:8080/android";
+    private static final String SERVER_URL = "http://Phototrans.eu/~tomek/test.php/";
 
     private TextView textView;
     private Switch swEnable;
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         layout.addView(inputPass);
 
+
+
         builder.setView(layout);
 
         builder.setPositiveButton("Zaloguj", (dialog, which) -> {
@@ -111,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
             if (!user.isEmpty() && !pass.isEmpty()) {
                 btnLogin.setVisibility(View.GONE);
                 layoutMainContent.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.this, "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MainActivity.this, "Podaj login i hasło", Toast.LENGTH_SHORT).show();
             }
@@ -192,6 +194,44 @@ public class MainActivity extends AppCompatActivity {
         textView.setText("Zatrzymano GPS");
     }
 
+    private void sendSingInToServer(String login, String pass) {
+        networkExecutor.execute(() -> {
+            try {
+                URL url = new URL(SERVER_URL);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.setRequestProperty("Content-Type", "application/json");
+
+                String json = "{ " +
+                        "\"ID\": " + 0 + ", " +
+                        "\"latitude\": " + login + ", " +
+                        "\"longitude\": " + pass + "\"" +
+                        " }";
+
+                byte[] data = json.getBytes(StandardCharsets.UTF_8);
+
+                try (OutputStream output = connection.getOutputStream()) {
+                    output.write(data);
+                }
+
+                int code = connection.getResponseCode();
+                Log.d("SERVER", "Wysłano: " + code);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, "Błąd wysyłania: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            }
+        );
+    }
+
     private void sendDataToServer(double lat, double lon) {
         networkExecutor.execute(() -> {
             try {
@@ -205,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 connection.setRequestProperty("Content-Type", "application/json");
 
                 String json = "{ " +
+                        "\"ID\": " + 1 + ", " +
                         "\"latitude\": " + lat + ", " +
                         "\"longitude\": " + lon + ", " +
                         "\"courseNumber\": \"" + currentCourseNumber + "\", " +
