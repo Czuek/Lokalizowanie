@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="20dp">
 
@@ -8,11 +8,15 @@
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Zaloguj"
+            android:text="@string/zaloguj"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            />
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+               />
     <LinearLayout
             android:id="@+id/layoutMainContent"
             android:layout_width="match_parent"
@@ -26,7 +30,7 @@
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Oczekiwanie..."
+                android:text="@string/oczekiwanie"
                 android:textSize="20sp"
                 android:layout_marginBottom="20dp"/>
 
@@ -34,8 +38,8 @@
                 android:id="@+id/swEnable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Włącz namierzanie (30s)"
-                android:textSize="18sp"/>
+                android:text="@string/w_cz_namierzanie_30s"
+                android:textSize="18sp" tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
     </LinearLayout>
 
